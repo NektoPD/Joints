@@ -16,12 +16,16 @@ public class Thrower : MonoBehaviour
     private Projectile _projectile;
     private int _spawnDelay = 1;
     private int _destrictionTime = 5;
+    private KeyCode _pushButton = KeyCode.Q;
+    private KeyCode _returnButton = KeyCode.E;
+    private bool _canLaunch;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _springJoint = GetComponent<SpringJoint>();
         _startPosition = _springJoint.anchor;
+        _canLaunch = true;
     }
 
     private void Start()
@@ -31,17 +35,19 @@ public class Thrower : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.E))
+        if(Input.GetKeyDown(_pushButton) && _canLaunch == true)
         {
+            _canLaunch = false;
             _springJoint.anchor = _throwPosition;
             _rigidbody.WakeUp();
-            _projectile.GetComponent<Rigidbody>().AddForce(_appliedForce);
+            _projectile.Rigidboy.AddForce(_appliedForce);
             Destroy(_projectile.gameObject, _destrictionTime);
         }
 
-        if(Input.GetKeyDown(KeyCode.Q)) 
+        if(Input.GetKeyDown(_returnButton) & _canLaunch == false) 
         {
             StartCoroutine(ReturnToDefaultPosition());
+            _canLaunch = true;
         }
     }
 
